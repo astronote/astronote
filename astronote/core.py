@@ -296,7 +296,7 @@ def get_planet_events(planet, date, lat, lon):
     return events
 
 
-def get_next_rise(body, date, lat, lon):
+def get_next_rise(body, date, lat, lon, start=None):
     """Return the date and time when an object will next rise above the horizon.
 
     Keyword arguments:
@@ -304,14 +304,20 @@ def get_next_rise(body, date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
-    next_rise = location.next_rising(body)
+
+    if start:
+        next_rise = location.next_rising(body, start=start)
+    else:
+        next_rise = location.next_rising(body)
+
     return next_rise
 
 
-def get_next_set(body, date, lat, lon):
+def get_next_set(body, date, lat, lon, start=None):
     """Return the date and time when an object will next set below the horizon.
 
     Keyword arguments:
@@ -319,10 +325,16 @@ def get_next_set(body, date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
-    next_set = location.next_setting(body)
+
+    if start:
+        next_set = location.next_setting(body, start=start)
+    else:
+        next_set = location.next_setting(body)
+
     return next_set
 
 
@@ -506,7 +518,7 @@ def get_min_separations(date):
 
 
 
-def get_twilight_start(date, lat, lon):
+def get_twilight_start(date, lat, lon, start=None):
     """Return the time of which nautical twilight will start on a given day at
     a given location.
 
@@ -514,17 +526,21 @@ def get_twilight_start(date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
     location.horizon = '-6'
 
-    twilight_start = location.next_setting(ephem.Sun(), use_center=True)
+    if start:
+        twilight_start = location.next_setting(ephem.Sun(), use_center=True, start=start)
+    else:
+        twilight_start = location.next_setting(ephem.Sun(), use_center=True)
 
     return twilight_start
 
 
-def get_twilight_end(date, lat, lon):
+def get_twilight_end(date, lat, lon, start=None):
     """Return a PyEphem Date object for when nautical twilight ends at the
     given location.
 
@@ -532,16 +548,16 @@ def get_twilight_end(date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
     location.horizon = '-6'
 
-    # To get the end of twilight, the location's date must be modified by
-    # adding 1 to calculate the sunrise for the next day.
-    location.date += 1
-
-    twilight_end = location.next_rising(ephem.Sun(), use_center=True)
+    if start:
+        twilight_end = location.next_rising(ephem.Sun(), use_center=True, start=start)
+    else:
+        twilight_end = location.next_rising(ephem.Sun(), use_center=True)
 
     return twilight_end
 
