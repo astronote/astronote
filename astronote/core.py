@@ -284,13 +284,21 @@ def get_planet_events(planet, date, lat, lon):
     """
 
     planet_rise = get_next_rise(planet, date, lat, lon)
-    planet_set = get_next_set(planet, planet_rise, lat, lon)
-    planet_visibility = is_planet_visible(planet_rise, planet_set, date, lat, lon)
+    planet_set = get_next_set(planet, date, lat, lon)
+    twilight_start = get_twilight_start(date, lat, lon)
+    twilight_end = get_twilight_end(date, lat, lon, twilight_start)
+
+    planet_in_twilight = is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end)
+
+    if planet_in_twilight:
+        planet_is_visible = True
+    else:
+        planet_is_visible = False
 
     events = {
         'rise': split_date(planet_rise),
         'set': split_date(planet_set),
-        'visible': planet_visibility
+        'visible': planet_is_visible
     }
 
     return events
@@ -338,8 +346,16 @@ def get_next_set(body, date, lat, lon, start=None):
     return next_set
 
 
-def is_planet_visible(planet_rise, planet_set, date, lat, lon):
-    """Return a Boolean indicating if the planet will be visible at night.
+def is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end):
+    """Return a Boolean indicating if the planet will be visible at night. This
+    is determined by one of two ways, depending on if the planet rises and
+    sets, or sets and then rises, on the given day.
+
+    If the planet rises and then sets, a check will be done to see if the
+    planet's time above the horizon intersects with twilight.
+
+    If the planet sets and then rises, a check will be done to see if the
+    planet rises during twilight or sets during twilight.
 
     Keyword arguments:
     planet_rise -- the date and time that a planet will rise.
@@ -349,12 +365,29 @@ def is_planet_visible(planet_rise, planet_set, date, lat, lon):
     lon -- a floating-point longitude string. (positive/negative = East/West)
     """
 
-    twilight_start = get_twilight_start(date, lat, lon)
-    twilight_end = get_twilight_end(date, lat, lon)
+    # Determine what kind of check should be made, and rearrange the dates if
+    # the planet sets before it rises on the given day.
+    if planet_rise <= planet_set:
+        date1a = planet_rise
+        date1b = planet_set
+        check_overlap = True
+    else:
+        date1a = planet_set
+        date1b = planet_rise
+        check_overlap = False
 
-    return (planet_rise + ephem.hour < twilight_end) and \
-           (planet_set - ephem.hour > twilight_start)
+    # An hour leeway is given either side of twilight to account for visibility
+    # restrictions as a result of trees, hills and other objects.
+    date2a = twilight_start + ephem.hour
+    date2b = twilight_end - ephem.hour
 
+    if check_overlap:
+        # This will check if the planet's above horizon time intersects with
+        # twilight.
+        return (date1a <= date2b) and (date2a <= date1b)
+    else:
+        # This will check if the planet rises or sets during twilight.
+        return (date2a <= date1a <= date2b) or (date2a <= date1b <= date2b)
 
 
 def get_oppositions(date):
