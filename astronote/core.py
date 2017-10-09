@@ -857,7 +857,7 @@ def get_separation(body1, body2, time):
 
     body1.compute(time)
     body2.compute(time)
-    return ephem.degrees(ephem.separation(body1, body2)).znorm * (180 / math.pi)
+    return get_degrees(ephem.separation(body1, body2))
 
 
 def is_min_separation(body1, body2, date):
@@ -982,6 +982,17 @@ def is_equinox(date):
 
     next_equinox = ephem.next_equinox(date)
     return set_date_to_midnight(next_equinox) == ephem.Date(date)
+
+
+def get_degrees(angle):
+    """Returns the value of a PyEphem angle (which is expressed in
+    radians) as a floating point number.
+
+    Keyword arguments:
+    angle -- a PyEphem Angle object.
+    """
+
+    return ephem.degrees(angle).znorm * (180 / math.pi)
 
 
 def define_location(date = datetime.now().strftime("%Y-%m-%d"), lat = '0', lon = '0'):
