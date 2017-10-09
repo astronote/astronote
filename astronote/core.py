@@ -908,12 +908,19 @@ def find_min_separation(body1, body2, date):
         time = ephem.Date(date) + (ephem.hour * offset)
         separation =  get_separation(body1, body2, time)
 
+        # Check if the separation is increasing again so that we can break the
+        # loop early.
         if separations and separation > separations[-1]:
             break
         else:
             separations.append(separation)
 
-    return separations[-1]
+    # If the minimum separation is less than or equal to 4 degrees, return the
+    # separation value.
+    if separations[-1] <= 4:
+        return separations[-1]
+    else:
+        return None
 
 
 def get_meteor_showers(date, lat, lon):
