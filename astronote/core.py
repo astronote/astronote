@@ -833,13 +833,15 @@ def is_elongation(body, date):
     body.compute(time2)
     elong2b = body.elong.znorm
 
-    if (elong1a <= elong1b) and (elong2a >= elong2b) or \
-       (elong1a >= elong1b) and (elong2a <= elong2b):
+    if abs(get_degrees(elong1a)) > 5 and abs(get_degrees(elong2b)) > 5:
 
-        if elong2b < 0:
-            return 'west'
-        elif elong2b > 0:
-            return 'east'
+        if (elong1a <= elong1b) and (elong2a >= elong2b) or \
+           (elong1a >= elong1b) and (elong2a <= elong2b):
+
+            if elong2b < 0:
+                return 'west'
+            elif elong2b > 0:
+                return 'east'
 
     else:
 
