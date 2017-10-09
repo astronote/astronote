@@ -288,9 +288,14 @@ def get_planet_events(planet, date, lat, lon):
     twilight_start = get_twilight_start(date, lat, lon)
     twilight_end = get_twilight_end(date, lat, lon, twilight_start)
 
-    planet_in_twilight = is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end)
+    location = define_location(twilight_end, lat, lon)
+    sun = ephem.Sun()
+    sun.compute(location)
 
-    if planet_in_twilight:
+    planet_in_twilight = is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end)
+    planet_distance_to_sun = ephem.degrees(ephem.separation(planet, sun)).znorm * (180 / math.pi)
+
+    if planet_in_twilight and planet_distance_to_sun > 15:
         planet_is_visible = True
     else:
         planet_is_visible = False
