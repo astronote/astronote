@@ -284,19 +284,32 @@ def get_planet_events(planet, date, lat, lon):
     """
 
     planet_rise = get_next_rise(planet, date, lat, lon)
-    planet_set = get_next_set(planet, planet_rise, lat, lon)
-    planet_visibility = is_planet_visible(planet_rise, planet_set, date, lat, lon)
+    planet_set = get_next_set(planet, date, lat, lon)
+    twilight_start = get_twilight_start(date, lat, lon)
+    twilight_end = get_twilight_end(date, lat, lon, twilight_start)
+
+    location = define_location(twilight_end, lat, lon)
+    sun = ephem.Sun()
+    sun.compute(location)
+
+    planet_in_twilight = is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end)
+    planet_distance_to_sun = ephem.degrees(ephem.separation(planet, sun)).znorm * (180 / math.pi)
+
+    if planet_in_twilight and planet_distance_to_sun > 15:
+        planet_is_visible = True
+    else:
+        planet_is_visible = False
 
     events = {
         'rise': split_date(planet_rise),
         'set': split_date(planet_set),
-        'visible': planet_visibility
+        'visible': planet_is_visible
     }
 
     return events
 
 
-def get_next_rise(body, date, lat, lon):
+def get_next_rise(body, date, lat, lon, start=None):
     """Return the date and time when an object will next rise above the horizon.
 
     Keyword arguments:
@@ -304,14 +317,20 @@ def get_next_rise(body, date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
-    next_rise = location.next_rising(body)
+
+    if start:
+        next_rise = location.next_rising(body, start=start)
+    else:
+        next_rise = location.next_rising(body)
+
     return next_rise
 
 
-def get_next_set(body, date, lat, lon):
+def get_next_set(body, date, lat, lon, start=None):
     """Return the date and time when an object will next set below the horizon.
 
     Keyword arguments:
@@ -319,15 +338,29 @@ def get_next_set(body, date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
-    next_set = location.next_setting(body)
+
+    if start:
+        next_set = location.next_setting(body, start=start)
+    else:
+        next_set = location.next_setting(body)
+
     return next_set
 
 
-def is_planet_visible(planet_rise, planet_set, date, lat, lon):
-    """Return a Boolean indicating if the planet will be visible at night.
+def is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end):
+    """Return a Boolean indicating if the planet will be visible at night. This
+    is determined by one of two ways, depending on if the planet rises and
+    sets, or sets and then rises, on the given day.
+
+    If the planet rises and then sets, a check will be done to see if the
+    planet's time above the horizon intersects with twilight.
+
+    If the planet sets and then rises, a check will be done to see if the
+    planet rises during twilight or sets during twilight.
 
     Keyword arguments:
     planet_rise -- the date and time that a planet will rise.
@@ -337,12 +370,29 @@ def is_planet_visible(planet_rise, planet_set, date, lat, lon):
     lon -- a floating-point longitude string. (positive/negative = East/West)
     """
 
-    twilight_start = get_twilight_start(date, lat, lon)
-    twilight_end = get_twilight_end(date, lat, lon)
+    # Determine what kind of check should be made, and rearrange the dates if
+    # the planet sets before it rises on the given day.
+    if planet_rise <= planet_set:
+        date1a = planet_rise
+        date1b = planet_set
+        check_overlap = True
+    else:
+        date1a = planet_set
+        date1b = planet_rise
+        check_overlap = False
 
-    return (planet_rise + ephem.hour < twilight_end) and \
-           (planet_set - ephem.hour > twilight_start)
+    # An hour leeway is given either side of twilight to account for visibility
+    # restrictions as a result of trees, hills and other objects.
+    date2a = twilight_start + ephem.hour
+    date2b = twilight_end - ephem.hour
 
+    if check_overlap:
+        # This will check if the planet's above horizon time intersects with
+        # twilight.
+        return (date1a <= date2b) and (date2a <= date1b)
+    else:
+        # This will check if the planet rises or sets during twilight.
+        return (date2a <= date1a <= date2b) or (date2a <= date1b <= date2b)
 
 
 def get_oppositions(date):
@@ -506,7 +556,7 @@ def get_min_separations(date):
 
 
 
-def get_twilight_start(date, lat, lon):
+def get_twilight_start(date, lat, lon, start=None):
     """Return the time of which nautical twilight will start on a given day at
     a given location.
 
@@ -514,17 +564,21 @@ def get_twilight_start(date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
     location.horizon = '-6'
 
-    twilight_start = location.next_setting(ephem.Sun(), use_center=True)
+    if start:
+        twilight_start = location.next_setting(ephem.Sun(), use_center=True, start=start)
+    else:
+        twilight_start = location.next_setting(ephem.Sun(), use_center=True)
 
     return twilight_start
 
 
-def get_twilight_end(date, lat, lon):
+def get_twilight_end(date, lat, lon, start=None):
     """Return a PyEphem Date object for when nautical twilight ends at the
     given location.
 
@@ -532,16 +586,16 @@ def get_twilight_end(date, lat, lon):
     date -- a YYYY-MM-DD string.
     lat -- a floating-point latitude string. (positive/negative = North/South)
     lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
     """
 
     location = define_location(date, lat, lon)
     location.horizon = '-6'
 
-    # To get the end of twilight, the location's date must be modified by
-    # adding 1 to calculate the sunrise for the next day.
-    location.date += 1
-
-    twilight_end = location.next_rising(ephem.Sun(), use_center=True)
+    if start:
+        twilight_end = location.next_rising(ephem.Sun(), use_center=True, start=start)
+    else:
+        twilight_end = location.next_rising(ephem.Sun(), use_center=True)
 
     return twilight_end
 
@@ -779,13 +833,15 @@ def is_elongation(body, date):
     body.compute(time2)
     elong2b = body.elong.znorm
 
-    if (elong1a <= elong1b) and (elong2a >= elong2b) or \
-       (elong1a >= elong1b) and (elong2a <= elong2b):
+    if abs(get_degrees(elong1a)) > 5 and abs(get_degrees(elong2b)) > 5:
 
-        if elong2b < 0:
-            return 'west'
-        elif elong2b > 0:
-            return 'east'
+        if (elong1a <= elong1b) and (elong2a >= elong2b) or \
+           (elong1a >= elong1b) and (elong2a <= elong2b):
+
+            if elong2b < 0:
+                return 'west'
+            elif elong2b > 0:
+                return 'east'
 
     else:
 
@@ -803,7 +859,7 @@ def get_separation(body1, body2, time):
 
     body1.compute(time)
     body2.compute(time)
-    return ephem.degrees(ephem.separation(body1, body2)).znorm * (180 / math.pi)
+    return get_degrees(ephem.separation(body1, body2))
 
 
 def is_min_separation(body1, body2, date):
@@ -854,12 +910,19 @@ def find_min_separation(body1, body2, date):
         time = ephem.Date(date) + (ephem.hour * offset)
         separation =  get_separation(body1, body2, time)
 
+        # Check if the separation is increasing again so that we can break the
+        # loop early.
         if separations and separation > separations[-1]:
             break
         else:
             separations.append(separation)
 
-    return separations[-1]
+    # If the minimum separation is less than or equal to 4 degrees, return the
+    # separation value.
+    if separations[-1] <= 4:
+        return separations[-1]
+    else:
+        return None
 
 
 def get_meteor_showers(date, lat, lon):
@@ -928,6 +991,17 @@ def is_equinox(date):
 
     next_equinox = ephem.next_equinox(date)
     return set_date_to_midnight(next_equinox) == ephem.Date(date)
+
+
+def get_degrees(angle):
+    """Returns the value of a PyEphem angle (which is expressed in
+    radians) as a floating point number.
+
+    Keyword arguments:
+    angle -- a PyEphem Angle object.
+    """
+
+    return ephem.degrees(angle).znorm * (180 / math.pi)
 
 
 def define_location(date = datetime.now().strftime("%Y-%m-%d"), lat = '0', lon = '0'):
