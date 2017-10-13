@@ -309,48 +309,6 @@ def get_planet_events(planet, date, lat, lon):
     return events
 
 
-def get_next_rise(body, date, lat, lon, start=None):
-    """Return the date and time when an object will next rise above the horizon.
-
-    Keyword arguments:
-    body -- the planetary body to check the next rise time for.
-    date -- a YYYY-MM-DD string.
-    lat -- a floating-point latitude string. (positive/negative = North/South)
-    lon -- a floating-point longitude string. (positive/negative = East/West)
-    start -- a date and time to start the search from.
-    """
-
-    location = define_location(date, lat, lon)
-
-    if start:
-        next_rise = location.next_rising(body, start=start)
-    else:
-        next_rise = location.next_rising(body)
-
-    return next_rise
-
-
-def get_next_set(body, date, lat, lon, start=None):
-    """Return the date and time when an object will next set below the horizon.
-
-    Keyword arguments:
-    body -- the planetary body to check the next set time for.
-    date -- a YYYY-MM-DD string.
-    lat -- a floating-point latitude string. (positive/negative = North/South)
-    lon -- a floating-point longitude string. (positive/negative = East/West)
-    start -- a date and time to start the search from.
-    """
-
-    location = define_location(date, lat, lon)
-
-    if start:
-        next_set = location.next_setting(body, start=start)
-    else:
-        next_set = location.next_setting(body)
-
-    return next_set
-
-
 def is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end):
     """Return a Boolean indicating if the planet will be visible at night. This
     is determined by one of two ways, depending on if the planet rises and
@@ -554,6 +512,47 @@ def get_min_separations(date):
 
     return separations
 
+
+def get_next_rise(body, date, lat, lon, start=None):
+    """Return the date and time when an object will next rise above the horizon.
+
+    Keyword arguments:
+    body -- the planetary body to check the next rise time for.
+    date -- a YYYY-MM-DD string.
+    lat -- a floating-point latitude string. (positive/negative = North/South)
+    lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
+    """
+
+    location = define_location(date, lat, lon)
+
+    if start:
+        next_rise = location.next_rising(body, start=start)
+    else:
+        next_rise = location.next_rising(body)
+
+    return next_rise
+
+
+def get_next_set(body, date, lat, lon, start=None):
+    """Return the date and time when an object will next set below the horizon.
+
+    Keyword arguments:
+    body -- the planetary body to check the next set time for.
+    date -- a YYYY-MM-DD string.
+    lat -- a floating-point latitude string. (positive/negative = North/South)
+    lon -- a floating-point longitude string. (positive/negative = East/West)
+    start -- a date and time to start the search from.
+    """
+
+    location = define_location(date, lat, lon)
+
+    if start:
+        next_set = location.next_setting(body, start=start)
+    else:
+        next_set = location.next_setting(body)
+
+    return next_set
 
 
 def get_twilight_start(date, lat, lon, start=None):
