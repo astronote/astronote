@@ -52,17 +52,6 @@ class TimeMethods(unittest.TestCase):
         })
 
 
-    def test_get_twilight_start_value(self):
-        twilight_start = astronote.get_twilight_start(self.date, self.lat, self.lon)
-        self.assertAlmostEqual(twilight_start, ephem.Date('2017/1/1 18:30:30'), places=4)
-
-
-    def test_get_twilight_end_value(self):
-        twilight_end = astronote.get_twilight_end(self.date, self.lat, self.lon)
-        self.assertAlmostEqual(twilight_end, ephem.Date('2017/1/2 05:37:20'), places=4)
-
-
-
 class DistanceMethods(unittest.TestCase):
 
     location = ephem.Observer()
@@ -226,11 +215,6 @@ class MoonMethods(unittest.TestCase):
         self.assertFalse(astronote.is_moon_perigee(self.moon, self.date))
 
 
-    def test_get_moon_phase_return_value(self):
-        moon_phase = astronote.get_moon_phase(self.moon)
-        self.assertEqual(moon_phase, 7)
-
-
     def test_get_major_moon_phase_return_value(self):
         self.assertTrue(astronote.get_major_moon_phase('2017/01/05'))
 
@@ -288,91 +272,6 @@ class PlanetMethods(unittest.TestCase):
         self.location.date = self.date
         self.location.lat = self.lat
         self.location.lon = self.lon
-
-
-    def test_get_visible_planets_return_value(self):
-        visible_planets = astronote.get_visible_planets(self.date, self.lat, self.lon)
-        self.assertEqual(visible_planets, [
-            {
-                'rise': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 9,
-                    'minute': 15,
-                    'second': 11
-                },
-                'set': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 21,
-                    'minute': 19,
-                    'second': 51
-                },
-                'visible': True,
-                'name': 'venus'
-            },
-            {
-                'rise': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 9,
-                    'minute': 59,
-                    'second': 36
-                },
-                'set': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 22,
-                    'minute': 3,
-                    'second': 33
-                },
-                'visible': True,
-                'name': 'mars'
-            },
-            {
-                'rise': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 12,
-                    'minute': 29,
-                    'second': 13},
-                'set': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 2,
-                    'hour': 0,
-                    'minute': 31,
-                    'second': 46
-                },
-                'visible': True,
-                'name': 'uranus'
-            },
-            {
-                'rise': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 9,
-                    'minute': 59,
-                    'second': 13
-                },
-                'set': {
-                    'year': 2017,
-                    'month': 1,
-                    'day': 1,
-                    'hour': 22,
-                    'minute': 1,
-                    'second': 49
-                },
-                'visible': True,
-                'name': 'neptune'
-            }
-        ])
 
 
     def test_get_planet_mars_return_value(self):
