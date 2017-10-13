@@ -182,7 +182,7 @@ def get_moon_events(date, lat, lon):
         'rise': split_date(moonrise),
         'set': split_date(moonset),
         'phase': {
-            'percent': get_moon_phase(moon)
+            'percent': int(round(moon.moon_phase * 100, 0))
         }
     }
 
@@ -653,16 +653,6 @@ def split_date(date):
         'minute': date[4],
         'second': int(math.floor(date[5]))
     }
-
-
-def get_moon_phase(moon):
-    """Returns the current phase of the Moon, represented as an integer
-    ranging from 0 to 100.
-
-    Keyword arguments:
-    moon --  a PyEphem Moon object.
-    """
-    return int(round(moon.moon_phase * 100, 0))
 
 
 def get_major_moon_phase(date):
