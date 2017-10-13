@@ -83,7 +83,7 @@ def get_events(date = datetime.now().strftime('%Y-%m-%d'), lat = '0', lon = '0')
     - visible planets for the night;
     - any oppositions, conjuctions and elongations;
     - any current meteor showers; and
-    - if the given day is a solstice.
+    - if the given day is a solstice or equinox.
 
     Keyword arguments:
     date -- a YYYY-MM-DD string.
@@ -123,7 +123,7 @@ def get_events(date = datetime.now().strftime('%Y-%m-%d'), lat = '0', lon = '0')
         events.append(solstice)
 
     # Check if the day is the next equinox. If it is, create an event
-    # specifying the type of equinox (i.e. March or September solstice) and
+    # specifying the type of equinox (i.e. March or September equinox) and
     # add it to the event list.
     if is_equinox(date):
 
@@ -984,7 +984,9 @@ def is_solstice(date):
 
 
 def is_equinox(date):
-    """Return a dictionary containing
+    """Returns a Boolean if the given day does not land on a equinox, or a
+    PyEphem Date if the given day does land on a equinox.
+
     Keyword arguments:
     date -- a YYYY-MM-DD string.
     """
