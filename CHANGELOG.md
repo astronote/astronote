@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - the `get_moon_phase` method as it was only ever called once.
+- all methods and references to calculating twilight times, including planet
+  visibility methods.
 
 
 ## [0.2.0]

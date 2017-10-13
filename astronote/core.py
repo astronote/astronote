@@ -285,17 +285,14 @@ def get_planet_events(planet, date, lat, lon):
 
     planet_rise = get_next_rise(planet, date, lat, lon)
     planet_set = get_next_set(planet, date, lat, lon)
-    twilight_start = get_twilight_start(date, lat, lon)
-    twilight_end = get_twilight_end(date, lat, lon, twilight_start)
 
-    location = define_location(twilight_end, lat, lon)
+    location = define_location(planet_set, lat, lon)
     sun = ephem.Sun()
     sun.compute(location)
 
-    planet_in_twilight = is_planet_visible(date, lat, lon, planet_rise, planet_set, twilight_start, twilight_end)
     planet_distance_to_sun = ephem.degrees(ephem.separation(planet, sun)).znorm * (180 / math.pi)
 
-    if planet_in_twilight and planet_distance_to_sun > 15:
+    if planet_distance_to_sun > 15:
         planet_is_visible = True
     else:
         planet_is_visible = False
@@ -553,50 +550,6 @@ def get_next_set(body, date, lat, lon, start=None):
         next_set = location.next_setting(body)
 
     return next_set
-
-
-def get_twilight_start(date, lat, lon, start=None):
-    """Return the time of which nautical twilight will start on a given day at
-    a given location.
-
-    Keyword arguments:
-    date -- a YYYY-MM-DD string.
-    lat -- a floating-point latitude string. (positive/negative = North/South)
-    lon -- a floating-point longitude string. (positive/negative = East/West)
-    start -- a date and time to start the search from.
-    """
-
-    location = define_location(date, lat, lon)
-    location.horizon = '-6'
-
-    if start:
-        twilight_start = location.next_setting(ephem.Sun(), use_center=True, start=start)
-    else:
-        twilight_start = location.next_setting(ephem.Sun(), use_center=True)
-
-    return twilight_start
-
-
-def get_twilight_end(date, lat, lon, start=None):
-    """Return a PyEphem Date object for when nautical twilight ends at the
-    given location.
-
-    Keyword arguments:
-    date -- a YYYY-MM-DD string.
-    lat -- a floating-point latitude string. (positive/negative = North/South)
-    lon -- a floating-point longitude string. (positive/negative = East/West)
-    start -- a date and time to start the search from.
-    """
-
-    location = define_location(date, lat, lon)
-    location.horizon = '-6'
-
-    if start:
-        twilight_end = location.next_rising(ephem.Sun(), use_center=True, start=start)
-    else:
-        twilight_end = location.next_rising(ephem.Sun(), use_center=True)
-
-    return twilight_end
 
 
 def get_distance_from_earth(body, date):
