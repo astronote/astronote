@@ -9,11 +9,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Version comparisons to the bottom of the changelog.
+- EditorConfig file.
+- `get_solstice_type` and `get_equinox_type` methods.
+- `is_date` method to check if a variable is an instance of `ephem.Date`.
 
 ### Removed
-- the `get_moon_phase` method as it was only ever called once.
-- all methods and references to calculating twilight times, including planet
+- The `get_moon_phase` method as it was only ever called once.
+- All methods and references to calculating twilight times, including planet
   visibility methods.
+
+### Changed
+- The structure of files, opting to group related methods into modules which are
+  imported into the core module.
+- Changed lunar methods:
+  - `get_major_moon_phase` to `is_major_phase`.
+  - `is_moon_apogee` to `is_at_apogee`.
+  - `is_moon_perigee` to `is_at_perigee`.
+
+### Fixed
+- The `if` statement in `get_meteor_showers` that was cancelling early; the
+  logic had to be adjusted.
 
 
 ## [0.2.0]
