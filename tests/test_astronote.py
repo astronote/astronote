@@ -5,470 +5,249 @@ import unittest
 import ephem
 
 
-class TimeMethods(unittest.TestCase):
+class SeasonMethods(unittest.TestCase):
 
-    location = ephem.Observer()
+    def test_is_solstice_return_value(self):
+        jun_solstice = astronote.seasons.is_solstice('2016-06-20')
+        dec_solstice = astronote.seasons.is_solstice('2016-12-21')
+        not_solstice = astronote.seasons.is_solstice('2016-04-21')
 
-
-    def setUp(self):
-        self.location.date = '2017/01/01'
-        self.location.lat = 0
-        self.location.lon = 0
-
-        self.date = self.location.date
-        self.lat = self.location.lat
-        self.lon = self.location.lon
+        self.assertTrue(jun_solstice)
+        self.assertTrue(dec_solstice)
+        self.assertFalse(not_solstice)
 
 
-    def test_next_set_return_value(self):
-        moon = ephem.Moon()
-        moon.compute(self.location)
-        next_set = self.location.next_setting(moon)
-        next_set_date = astronote.split_date(next_set)
+    def test_get_solstice_type_return_value(self):
+        jun_solstice = astronote.seasons.get_solstice_type('2016-06-20')
+        dec_solstice = astronote.seasons.get_solstice_type('2016-12-21')
+        not_solstice = astronote.seasons.get_solstice_type('2016-04-21')
 
-        self.assertEqual(next_set_date, {
-            'year': 2017,
-            'month': 1,
-            'day': 1,
-            'hour': 20,
-            'minute': 52,
-            'second': 47
-        })
+        self.assertEqual('june', jun_solstice)
+        self.assertEqual('december', dec_solstice)
+        self.assertEqual(None, not_solstice)
 
 
-    def test_next_rise_return_value(self):
-        moon = ephem.Moon()
-        moon.compute(self.location)
-        next_rise = self.location.next_rising(moon)
-        next_rise_date = astronote.split_date(next_rise)
+    def test_is_equinox_return_value(self):
+        mar_equinox = astronote.seasons.is_equinox('2016-03-20')
+        sep_equinox = astronote.seasons.is_equinox('2016-09-22')
+        not_equinox = astronote.seasons.is_equinox('2016-04-20')
 
-        self.assertEqual(next_rise_date, {
-            'year': 2017,
-            'month': 1,
-            'day': 1,
-            'hour': 8,
-            'minute': 28,
-            'second': 44
-        })
+        self.assertTrue(mar_equinox)
+        self.assertTrue(sep_equinox)
+        self.assertFalse(not_equinox)
 
 
-class DistanceMethods(unittest.TestCase):
+    def test_get_equinox_type_return_value(self):
+        mar_equinox = astronote.seasons.get_equinox_type('2016-03-20')
+        sep_equinox = astronote.seasons.get_equinox_type('2016-09-22')
+        not_equinox = astronote.seasons.get_equinox_type('2016-04-20')
 
-    location = ephem.Observer()
-
-
-    def setUp(self):
-        self.location.date = '2017/01/01'
-        self.location.lat = 0
-        self.location.lon = 0
-
-        self.date = self.location.date
-        self.lat = self.location.lat
-        self.lon = self.location.lon
+        self.assertEqual('march', mar_equinox)
+        self.assertEqual('september', sep_equinox)
+        self.assertEqual(None, not_equinox)
 
 
-    def test_get_distance_from_earth_return_value(self):
-        moon = ephem.Moon()
-        moon.compute(self.location)
+class CelestialMethods(unittest.TestCase):
 
-        distance = astronote.get_distance_from_earth(moon, '2017/01/01')
-        self.assertAlmostEqual(distance, 0.0026, places=4)
+    def test_get_meteor_showers_return_value(self):
+        meteor_showers = astronote.celestial.get_meteor_showers('2017-01-01')
+        no_meteor_showers = astronote.celestial.get_meteor_showers('2017-01-20')
 
-
-
-
-
-class DateMethods(unittest.TestCase):
-
-    def test_set_date_to_midnight_after_noon_return_value(self):
-        date = ephem.Date('2017/01/01 15:15:15')
-        date = astronote.set_date_to_midnight(date)
-        self.assertEqual(date, ephem.Date('2017/01/01 00:00:00'))
-
-
-    def test_set_date_to_midnight_before_noon_return_value(self):
-        date = ephem.Date('2017/01/01 05:05:05')
-        date = astronote.set_date_to_midnight(date)
-        self.assertEqual(date, ephem.Date('2017/01/01 00:00:00'))
-
-
-    def test_is_solstice_december_return_value(self):
-        solstice = astronote.is_solstice('2016/12/21')
-        self.assertTrue(solstice)
-
-
-    def test_is_solstice_june_return_value(self):
-        solstice = astronote.is_solstice('2017/06/21')
-        self.assertTrue(solstice)
-
-
-    def test_is_solstice_empty_return_value(self):
-        solstice = astronote.is_solstice('2017/01/01')
-        self.assertFalse(solstice)
-
-
-    def test_is_equinox_autumn_return_value(self):
-        equinox = astronote.is_equinox('2016/03/20')
-        self.assertTrue(equinox)
-
-
-    def test_is_equinox_spring_return_value(self):
-        equinox = astronote.is_equinox('2017/09/22')
-        self.assertTrue(equinox)
-
-
-    def test_is_equinox_empty_return_value(self):
-        equinox = astronote.is_equinox('2017/01/01')
-        self.assertFalse(equinox)
-
-
-    def test_split_date_return_value(self):
-        date = ephem.Date('2017/01/01')
-        split_date = astronote.split_date(date)
-        self.assertEqual(split_date, {
-            'year': 2017,
-            'month': 1,
-            'day': 1,
-            'hour': 0,
-            'minute': 0,
-            'second': 0
-        })
-
-
-
-
-
-class SunMethods(unittest.TestCase):
-
-    location = ephem.Observer()
-    sun = ephem.Sun()
-
-
-    def setUp(self):
-        self.location.date = '2017/01/01'
-        self.location.lat = 0
-        self.location.lon = 0
-
-        self.date = self.location.date
-        self.lat = self.location.lat
-        self.lon = self.location.lon
-
-        self.sun.compute(self.location)
-
-
-    def test_get_sun_events_return_value(self):
-        sun_events = astronote.get_sun_events(self.date, self.lat, self.lon)
-        self.assertEqual(sun_events, {
-            'rise': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 5,
-                'minute': 59,
-                'second': 41
-            },
-            'set': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 18,
-                'minute': 7,
-                'second': 39
+        self.assertEqual(meteor_showers, [
+            {
+                'name': 'Quadrantids',
+                'peak': {
+                    'month': 1,
+                    'day': 3
+                }
             }
-        })
+        ])
 
+        self.assertEqual(no_meteor_showers, [])
+
+
+class TransitMethods(unittest.TestCase):
+
+    def setUp(self):
+        self.date = '2017-01-01'
+        self.lat = '0'
+        self.lon = '0'
+
+        self.location = ephem.Observer()
+        self.location.date = self.date
+        self.location.lat = self.lat
+        self.location.lon = self.lon
+
+
+    def test_get_transit_times(self):
+        sun_transit = astronote.transits.get_transit_times(ephem.Sun(), self.date, self.lat, self.lon)
+        self.assertIn('year', sun_transit['rise'])
+        self.assertIn('month', sun_transit['rise'])
+        self.assertIn('day', sun_transit['rise'])
+        self.assertIn('hour', sun_transit['rise'])
+        self.assertIn('minute', sun_transit['rise'])
+        self.assertIn('second', sun_transit['rise'])
+
+
+    def test_get_transit(self):
+
+        # This is a random callback made to test the invalid state of the
+        # `get_transit` method.
+        def test_callback():
+            return True
+
+        next_rise = astronote.transits.get_transit(self.location.next_rising, ephem.Sun())
+        prev_rise = astronote.transits.get_transit(self.location.previous_rising, ephem.Sun())
+        next_set = astronote.transits.get_transit(self.location.next_setting, ephem.Sun())
+        prev_set = astronote.transits.get_transit(self.location.previous_setting, ephem.Sun())
+        invalid = astronote.transits.get_transit(test_callback, ephem.Sun())
+
+        self.assertIsInstance(next_rise, ephem.Date)
+        self.assertIsInstance(prev_rise, ephem.Date)
+        self.assertIsInstance(next_set, ephem.Date)
+        self.assertIsInstance(next_set, ephem.Date)
+        self.assertIsNone(invalid)
 
 
 class MoonMethods(unittest.TestCase):
 
-    location = ephem.Observer()
-    moon = ephem.Moon()
-
-
     def setUp(self):
-        self.date = '2017/01/01'
-        self.lat = 0
-        self.lon = 0
-
-        self.location.date = self.date
-        self.location.lat = self.lat
-        self.location.lon = self.lon
-
-        self.moon.compute(self.location)
+        self.moon = ephem.Moon()
 
 
-    def test_is_moon_apogee_return_value(self):
-        self.date = '2017/01/22'
-        self.assertTrue(astronote.is_moon_apogee(self.moon, self.date))
+    def test_is_major_phase(self):
+        full_moon = astronote.lunar.is_major_phase('2017-10-05')
+        self.assertEqual(full_moon, 'full_moon')
 
 
-    def test_is_moon_apogee_empty_return_value(self):
-        self.assertFalse(astronote.is_moon_apogee(self.moon, self.date))
+    def test_is_moon_at_apogee(self):
+        is_at_apogee = astronote.lunar.is_at_apogee(self.moon, '2017-10-25')
+        is_not_apogee = astronote.lunar.is_at_apogee(self.moon, '2017-10-15')
+        self.assertTrue(is_at_apogee)
+        self.assertFalse(is_not_apogee)
 
 
-    def test_is_moon_perigee_return_value(self):
-        self.date = '2017/01/10'
-        self.assertTrue(astronote.is_moon_perigee(self.moon, self.date))
+    def test_is_moon_at_perigee(self):
+        is_at_perigee = astronote.lunar.is_at_perigee(self.moon, '2017-10-09')
+        is_not_perigee = astronote.lunar.is_at_perigee(self.moon, '2017-10-15')
+        self.assertTrue(is_at_perigee)
+        self.assertFalse(is_not_perigee)
 
 
-    def test_is_moon_perigee_empty_return_value(self):
-        self.assertFalse(astronote.is_moon_perigee(self.moon, self.date))
+class BodyMethods(unittest.TestCase):
+
+    # This does not work as of yet.
+    def test_is_visible(self):
+        visible1 = astronote.bodies.is_visible(ephem.Jupiter(), '2017-01-01')
+        visible2 = astronote.bodies.is_visible(ephem.Mercury(), '2017-01-01')
+        self.assertTrue(visible1)
+        self.assertFalse(visible2)
 
 
-    def test_get_major_moon_phase_return_value(self):
-        self.assertTrue(astronote.get_major_moon_phase('2017/01/05'))
+    def test_is_opposition(self):
+        opposition1 = astronote.bodies.is_opposition(ephem.Pluto(), '2017-07-10')
+        opposition2 = astronote.bodies.is_opposition(ephem.Pluto(), '2017-07-20')
+        self.assertTrue(opposition1)
+        self.assertFalse(opposition2)
 
 
-    def test_get_major_moon_phase_empty_return_value(self):
-        self.assertFalse(astronote.get_major_moon_phase('2017/01/01'))
+    def test_is_conjunction(self):
+        conjunction1 = astronote.bodies.is_conjunction(ephem.Mercury(), '2017-10-08')
+        conjunction2 = astronote.bodies.is_conjunction(ephem.Mercury(), '2017-07-20')
+        self.assertTrue(conjunction1)
+        self.assertFalse(conjunction2)
+
+    def test_is_elongation(self):
+        elongation1 = astronote.bodies.is_elongation(ephem.Mercury(), '2017-07-30')
+        elongation2 = astronote.bodies.is_elongation(ephem.Mercury(), '2017-07-20')
+        self.assertTrue(elongation1)
+        self.assertFalse(elongation2)
 
 
-    def test_get_moon_events_return_value(self):
-        moon_events = astronote.get_moon_events(self.date, self.lat, self.lon)
-        self.assertEqual(moon_events, {
-            'rise': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 8,
-                'minute': 28,
-                'second': 44
-            },
-            'set': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 20,
-                'minute': 52,
-                'second': 47
-            },
-            'phase': {
-                'percent': 13
-            }
+class SeparationMethods(unittest.TestCase):
+
+    def test_get_separation(self):
+        body1 = ephem.Venus()
+        body2 = ephem.Mars()
+        time = ephem.Date('2017-10-06')
+        separation = astronote.separations.get_separation(body1, body2, time)
+        self.assertAlmostEqual(separation, 0.3, places=1)
+
+
+    def test_is_min_separation(self):
+        body1 = ephem.Venus()
+        body2 = ephem.Mars()
+        time1 = ephem.Date('2017-10-05')
+        time2 = ephem.Date('2017-10-01')
+        separation1 = astronote.separations.is_min_separation(body1, body2, time1)
+        separation2 = astronote.separations.is_min_separation(body1, body2, time2)
+
+        self.assertTrue(separation1)
+        self.assertFalse(separation2)
+
+
+    def test_get_min_separation(self):
+        body1 = ephem.Venus()
+        body2 = ephem.Mars()
+        time = ephem.Date('2017-10-05')
+        separation = astronote.separations.get_min_separation(body1, body2, time)
+        self.assertAlmostEqual(separation, 0.2, places=1)
+
+
+
+class HelperMethods(unittest.TestCase):
+
+    def test_get_degrees(self):
+        angle = ephem.degrees('14:12:45.77')
+        angle = astronote.helpers.get_degrees(angle)
+        self.assertAlmostEqual(angle, 14.2127, places=4)
+
+
+    def test_is_date(self):
+        date = ephem.Date('2017-01-01')
+        self.assertTrue(astronote.helpers.is_date(date))
+        self.assertFalse(astronote.helpers.is_date('string'))
+        self.assertFalse(astronote.helpers.is_date(15))
+
+
+    def test_split_date(self):
+        date = ephem.Date('2017-01-01 14:53:45')
+        date = astronote.helpers.split_date(date)
+
+        self.assertEqual(date, {
+            'year': 2017,
+            'month': 1,
+            'day': 1,
+            'hour': 14,
+            'minute': 53,
+            'second': 45
         })
 
 
+    def test_set_date_to_midnight(self):
+        date = ephem.Date('2017-01-01 14:53:45')
+        midnight = ephem.Date('2017-01-01 00:00:00')
+
+        self.assertEqual(midnight, astronote.helpers.set_date_to_midnight(date))
 
 
-
-class PlanetMethods(unittest.TestCase):
-
-    location = ephem.Observer()
-    mercury = ephem.Mercury()
-    venus = ephem.Venus()
-    mars = ephem.Mars()
-    jupiter = ephem.Jupiter()
-    saturn = ephem.Saturn()
-    uranus = ephem.Uranus()
-    neptune = ephem.Neptune()
-    pluto = ephem.Pluto()
+    def test_get_distance_from_earth_return_value(self):
+        distance = astronote.helpers.get_distance_from_earth(ephem.Moon(), '2017-01-01')
+        self.assertAlmostEqual(distance, 0.0026, places=4)
 
 
-    def setUp(self):
-        self.date = '2017/01/01'
-        self.lat = 0
-        self.lon = 0
-
-        self.location.date = self.date
-        self.location.lat = self.lat
-        self.location.lon = self.lon
-
-
-    def test_get_planet_mars_return_value(self):
-        self.mars.compute(self.location)
-        mars_events = astronote.get_planet_events(self.mars, self.date, self.lat, self.lon)
-        self.assertEqual(mars_events, {
-            'rise': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 9,
-                'minute': 59,
-                'second': 36
-            },
-            'set': {
-                'year': 2017,
-                'month': 1,
-                'day': 1,
-                'hour': 22,
-                'minute': 3,
-                'second': 33
-            },
-            'visible': True
+    def test_create_event(self):
+        event = astronote.helpers.create_event('event', {
+            'foo': 'bar'
         })
 
-
-
-
-
-class AlignmentMethods(unittest.TestCase):
-
-    location = ephem.Observer()
-
-
-    def setUp(self):
-        self.date = '2017/01/01'
-
-
-    def test_get_oppositions_return_value(self):
-        self.date = '2017/04/07'
-        oppositions = astronote.get_oppositions(self.date)
-        self.assertEqual(oppositions, [
-            {
-                'event': 'opposition',
-                'highlight': False,
-                'data': {
-                    'body': 'jupiter'
-                }
+        self.assertEqual(event, {
+            'event': 'event',
+            'data': {
+                'foo': 'bar'
             }
-        ])
+        })
 
-
-    def test_get_oppositions_empty_return_value(self):
-        oppositions = astronote.get_oppositions(self.date)
-        self.assertEqual(oppositions, [])
-
-
-    def test_get_conjunctions_return_value(self):
-        self.date = '2017/04/14'
-        conjunctions = astronote.get_conjunctions(self.date)
-        self.assertEqual(conjunctions, [
-            {
-                'event': 'conjunction',
-                'highlight': False,
-                'data': {
-                    'body': 'uranus',
-                    'type': 'conjuction'
-                }
-            }
-        ])
-
-
-    def test_get_conjunctions_superior_return_value(self):
-        self.date = '2017/03/07'
-        conjunctions = astronote.get_conjunctions(self.date)
-        self.assertEqual(conjunctions, [
-            {
-                'event': 'conjunction',
-                'highlight': False,
-                'data': {
-                    'body': 'mercury',
-                    'type': 'superior'
-                }
-            }
-        ])
-
-
-    def test_get_conjunctions_inferior_return_value(self):
-        self.date = '2017/03/25'
-        conjunctions = astronote.get_conjunctions(self.date)
-        self.assertEqual(conjunctions, [
-            {
-                'event': 'conjunction',
-                'highlight': False,
-                'data': {
-                    'body': 'venus',
-                    'type': 'inferior'
-                }
-            }
-        ])
-
-
-    def test_get_conjunctions_empty_return_value(self):
-        conjunctions = astronote.get_conjunctions(self.date)
-        self.assertEqual(conjunctions, [])
-
-
-    def test_get_elongations_east_return_value(self):
-        self.date = '2017/01/12'
-        elongations = astronote.get_elongations(self.date)
-        self.assertEqual(elongations, [
-            {
-                'event': 'elongation',
-                'highlight': False,
-                'data': {
-                    'body': 'venus',
-                    'type': 'east'
-                }
-            }
-        ])
-
-
-    def test_get_elongations_west_return_value(self):
-        self.date = '2017/01/19'
-        elongations = astronote.get_elongations(self.date)
-        self.assertEqual(elongations, [
-            {
-                'event': 'elongation',
-                'highlight': False,
-                'data': {
-                    'body': 'mercury',
-                    'type': 'west'
-                }
-            }
-        ])
-
-
-    def test_get_elongations_empty_return_value(self):
-        elongations = astronote.get_elongations(self.date)
-        self.assertEqual(elongations, [])
-
-
-    def test_get_min_separations_return_value(self):
-        self.date = '2017/01/02'
-        separations = astronote.get_min_separations(self.date)
-        self.assertEqual(separations, [
-            {
-                'event': 'separation',
-                'highlight': False,
-                'data': {
-                    'body1': 'moon',
-                    'body2': 'venus',
-                    'angle': 1.8,
-                }
-            }
-        ])
-
-
-    def test_get_min_separations_empty_return_value(self):
-        self.date = '2017/01/04'
-        separations = astronote.get_min_separations(self.date)
-        self.assertEqual(separations, [])
-
-
-
-class MeteorShowerMethods(unittest.TestCase):
-
-    location = ephem.Observer()
-
-
-    def setUp(self):
-        self.date = '2017/01/01'
-        self.lat = 0
-        self.lon = 0
-
-
-    def test_get_meteor_showers_return_value(self):
-        meteor_showers = astronote.get_meteor_showers(self.date, self.lat, self.lon)
-        self.assertEqual(meteor_showers, [
-            {
-                'event': 'meteor_shower',
-                'highlight': True,
-                'data': {
-                    'name': 'Quadrantids',
-                    'peak': {
-                        'month': 1,
-                        'day': 3
-                    }
-                }
-            }
-        ])
-
-
-    def test_get_meteor_showers_empty_return_value(self):
-        self.date = '2017/01/20'
-        meteor_showers = astronote.get_meteor_showers(self.date, self.lat, self.lon)
-        self.assertEqual(meteor_showers, [])
 
 
 if __name__ == '__main__':

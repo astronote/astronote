@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - The structure of files, opting to group related methods into modules which are
   imported into the core module.
+- The structure of tests to match the file changes.
+- Some test cases to focus less on the value and more on the correct type being
+  returned instead; this is due to tests constantly failing because of
+  imprecise number, etc.
 - Changed lunar methods:
   - `get_major_moon_phase` to `is_major_phase`.
   - `is_moon_apogee` to `is_at_apogee`.
