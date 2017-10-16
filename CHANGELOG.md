@@ -6,8 +6,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
-- No unreleased changes.
+## [0.3.0]
+### Added
+- Version comparisons to the bottom of the changelog.
+- EditorConfig file.
+- `get_solstice_type` and `get_equinox_type` methods.
+- `is_date` method to check if a variable is an instance of `ephem.Date`.
+
+### Removed
+- The `get_moon_phase` method as it was only ever called once.
+- All methods and references to calculating twilight times, including planet
+  visibility methods.
+
+### Changed
+- The structure of files, opting to group related methods into modules which are
+  imported into the core module.
+- The structure of tests to match the file changes.
+- Some test cases to focus less on the value and more on the correct type being
+  returned instead; this is due to tests constantly failing because of
+  imprecise number, etc.
+- Changed lunar methods:
+  - `get_major_moon_phase` to `is_major_phase`.
+  - `is_moon_apogee` to `is_at_apogee`.
+  - `is_moon_perigee` to `is_at_perigee`.
+
+### Fixed
+- The `if` statement in `get_meteor_showers` that was cancelling early; the
+  logic had to be adjusted.
 
 
 ## [0.2.0]
@@ -35,3 +60,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.1.0]
 ### Added
 - The foundational functions of AstroNote as one initial commit.
+
+
+[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.3.0...HEAD
+[0.3.0] https://github.com/dfranklinau/astronote/compare/v0.2.0...v0.3.0
+[0.2.0] https://github.com/dfranklinau/astronote/compare/v0.1.0...v0.2.0
