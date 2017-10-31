@@ -113,6 +113,7 @@ def get_planet_data(planets, date, lat, lon):
         if bodies.is_visible(planet, date):
 
             planet_data = {
+                'name': planet.name,
                 'transits': transits.get_transit_times(planet, date, lat, lon)
             }
 
