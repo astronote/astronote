@@ -7,6 +7,12 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.2]
+### Changed
+- The rounding of the `second` value in dates so that a value of 60 seconds is
+  no longer possible.
+
+
 ## [0.3.1]
 ### Fixed
 - Added the planet name alongside planet transit times.
@@ -68,7 +74,8 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - The foundational functions of AstroNote as one initial commit.
 
 
-[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.3.1...HEAD
+[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.3.2...HEAD
+[0.3.2] https://github.com/dfranklinau/astronote/compare/v0.3.1...v0.3.2
 [0.3.1] https://github.com/dfranklinau/astronote/compare/v0.3.0...v0.3.1
 [0.3.0] https://github.com/dfranklinau/astronote/compare/v0.2.0...v0.3.0
 [0.2.0] https://github.com/dfranklinau/astronote/compare/v0.1.0...v0.2.0
