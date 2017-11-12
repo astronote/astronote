@@ -7,6 +7,12 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+### Changed
+- The rounding of the `second` value in dates so that a value of 60 seconds is
+  no longer possible.
+
+
 ## [0.3.1]
 ### Fixed
 - Added the planet name alongside planet transit times.

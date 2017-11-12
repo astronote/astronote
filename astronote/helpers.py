@@ -71,7 +71,7 @@ def split_date(date):
         'day': date[2],
         'hour': date[3],
         'minute': date[4],
-        'second': int(math.ceil(date[5]))
+        'second': math.floor(date[5])
     }
     return set_date_to_midnight(next_equinox) == ephem.Date(date)
 
