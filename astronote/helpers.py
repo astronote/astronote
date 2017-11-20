@@ -106,16 +106,16 @@ def set_date_to_midnight(date):
     return ephem.Date(round(date.real) - 0.5)
 
 
-def create_event(event, data):
+def create_event(event_type, data):
     """Return a dictionary containing the properties required when defining an
     event.
 
     Keyword arguments:
-    event -- the type of event, used to distinguish multiple events apart.
+    event_type -- the type of event, used to distinguish multiple events apart.
     data -- a dictionary of key/value pairs containing custom data.
     """
 
     return {
-        'event': event,
+        'type': event_type,
         'data': data
     }

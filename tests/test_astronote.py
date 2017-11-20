@@ -234,7 +234,7 @@ class HelperMethods(unittest.TestCase):
         })
 
         self.assertEqual(event, {
-            'event': 'event',
+            'type': 'event',
             'data': {
                 'foo': 'bar'
             }

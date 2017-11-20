@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
+
+## [0.5.0]
+### Changed
+- The `event` key on events to `type`.
+
+
 ## [0.4.0]
 ### Changed
 - The way transit times are presented in the JSON response. Rather than a JSON
@@ -88,7 +94,8 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - The foundational functions of AstroNote as one initial commit.
 
 
-[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.4.0...HEAD
+[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.5.0...HEAD
+[0.5.0] https://github.com/dfranklinau/astronote/compare/v0.4.0...v0.5.0
 [0.4.0] https://github.com/dfranklinau/astronote/compare/v0.3.2...v0.4.0
 [0.3.2] https://github.com/dfranklinau/astronote/compare/v0.3.1...v0.3.2
 [0.3.1] https://github.com/dfranklinau/astronote/compare/v0.3.0...v0.3.1
