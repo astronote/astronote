@@ -220,7 +220,7 @@ class HelperMethods(unittest.TestCase):
             'day': 1,
             'hour': 14,
             'minute': 53,
-            'second': 45
+            'second': 44
         })
 
 
