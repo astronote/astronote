@@ -179,9 +179,14 @@ def get_separation_events(bodies, date):
 
     events = []
 
+    # Create a new list that is essentially a copy of the `bodies` list. The
+    # purpose of this is so that one list can have items removed while the list
+    # used for the main loop remains intact.
+    comparators = list(bodies)
+
     for body1 in bodies:
 
-        for body2 in bodies:
+        for body2 in comparators:
 
             if (body1 != body2):
 
@@ -195,9 +200,10 @@ def get_separation_events(bodies, date):
                         'angle': separation
                     }))
 
-        # Remove the body from the list of bodies since it has been compared
-        # against all other bodies, and duplicate comparisons/results are
-        # undesired.
-        bodies.pop(0)
+        # Remove the first element from the list which is used for comparisons
+        # only. This means that any duplicate checks are avoided because the
+        # same check will not be run twice, i.e. Jupiter will not check against
+        # Venus because Venus will have already checked against Jupiter.
+        comparators.pop(0)
 
     return events
