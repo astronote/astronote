@@ -81,12 +81,12 @@ class TransitMethods(unittest.TestCase):
 
     def test_get_transit_times(self):
         sun_transit = astronote.transits.get_transit_times(ephem.Sun(), self.date, self.lat, self.lon)
-        self.assertIn('year', sun_transit['rise'])
-        self.assertIn('month', sun_transit['rise'])
-        self.assertIn('day', sun_transit['rise'])
-        self.assertIn('hour', sun_transit['rise'])
-        self.assertIn('minute', sun_transit['rise'])
-        self.assertIn('second', sun_transit['rise'])
+        self.assertIn('year', sun_transit[0]['time'])
+        self.assertIn('month', sun_transit[0]['time'])
+        self.assertIn('day', sun_transit[0]['time'])
+        self.assertIn('hour', sun_transit[0]['time'])
+        self.assertIn('minute', sun_transit[0]['time'])
+        self.assertIn('second', sun_transit[0]['time'])
 
 
     def test_get_transit(self):
@@ -135,14 +135,6 @@ class MoonMethods(unittest.TestCase):
 
 
 class BodyMethods(unittest.TestCase):
-
-    # This does not work as of yet.
-    def test_is_visible(self):
-        visible1 = astronote.bodies.is_visible(ephem.Jupiter(), '2017-01-01')
-        visible2 = astronote.bodies.is_visible(ephem.Mercury(), '2017-01-01')
-        self.assertTrue(visible1)
-        self.assertFalse(visible2)
-
 
     def test_is_opposition(self):
         opposition1 = astronote.bodies.is_opposition(ephem.Pluto(), '2017-07-10')
@@ -220,7 +212,7 @@ class HelperMethods(unittest.TestCase):
             'day': 1,
             'hour': 14,
             'minute': 53,
-            'second': 45
+            'second': 44
         })
 
 

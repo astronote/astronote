@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.4.0]
+### Changed
+- The way transit times are presented in the JSON response. Rather than a JSON
+  object with key value pairs, transit times are presented as an ordered array
+  of values (ordered by datetime).
+
+### Removed
+- Unused `is_planet_visible` unit test.
+
+### Fixed
+- A bug that would involve the same separation event being listed twice.
+- `split_date` unit test based on changes from v0.3.2.
+
 
 ## [0.3.2]
 ### Changed
@@ -25,11 +38,6 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - `get_solstice_type` and `get_equinox_type` methods.
 - `is_date` method to check if a variable is an instance of `ephem.Date`.
 
-### Removed
-- The `get_moon_phase` method as it was only ever called once.
-- All methods and references to calculating twilight times, including planet
-  visibility methods.
-
 ### Changed
 - The structure of files, opting to group related methods into modules which are
   imported into the core module.
@@ -41,6 +49,11 @@ Versioning](http://semver.org/spec/v2.0.0.html).
   - `get_major_moon_phase` to `is_major_phase`.
   - `is_moon_apogee` to `is_at_apogee`.
   - `is_moon_perigee` to `is_at_perigee`.
+
+### Removed
+- The `get_moon_phase` method as it was only ever called once.
+- All methods and references to calculating twilight times, including planet
+  visibility methods.
 
 ### Fixed
 - The `if` statement in `get_meteor_showers` that was cancelling early; the
@@ -69,12 +82,14 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Word wrapping in the license.
 
+
 ## [0.1.0]
 ### Added
 - The foundational functions of AstroNote as one initial commit.
 
 
-[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.3.2...HEAD
+[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.4.0...HEAD
+[0.4.0] https://github.com/dfranklinau/astronote/compare/v0.3.2...v0.4.0
 [0.3.2] https://github.com/dfranklinau/astronote/compare/v0.3.1...v0.3.2
 [0.3.1] https://github.com/dfranklinau/astronote/compare/v0.3.0...v0.3.1
 [0.3.0] https://github.com/dfranklinau/astronote/compare/v0.2.0...v0.3.0

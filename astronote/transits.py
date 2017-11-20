@@ -11,13 +11,35 @@ from datetime import datetime
 from . import helpers
 
 
+def format_transit_time(transit_type, date):
+    """Returns a dictionary that defines a transit time, containing both the
+    type of transit (i.e. a rise or set) and the datetime that it occurs.
+
+    Keyword arguments:
+    transit_type -- a string defining what the transit is, e.g. rise or set
+    date -- a datetime object.
+    """
+
+    # Define a dictionary to hold all data, that will eventually be returned.
+    transit = {'type': transit_type}
+
+    # If the date is valid then the date is split into a dictionary. Otherwise,
+    # the date is likely a "NeverUp" or "AlwaysUp" string and is stored as is.
+    if helpers.is_date(date):
+        transit['time'] = helpers.split_date(date)
+    else:
+        transit['time'] = date
+
+    return transit
+
+
 def get_transit_times(body, date, lat, lon):
 
     # Define an Observer.
     location = helpers.define_location(date, lat, lon)
 
     # Create a holder for all transit information.
-    times = {}
+    times = []
 
     # Set up all rise and set variables.
     prev_body_rise = None
@@ -29,16 +51,17 @@ def get_transit_times(body, date, lat, lon):
     body_rise = get_transit(location.next_rising, body)
     body_set = get_transit(location.next_setting, body)
 
-    # Check to see if a previous rise is occurred. This is only necessary if
-    # the object sets before it rises.
+    # If the object sets before it rises, retrive the previous rise time as
+    # well to provide context to the set time.
     if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_set < body_rise or \
        isinstance(body_rise, str) and isinstance(body_set, str):
 
         prev_body_rise = get_transit(location.previous_rising, body)
 
 
-    # Get the next rise that occurs after the set, but only if it occurs on the
-    # same day.
+    # Check to see if the next rise occurs on the same day as the set. If it
+    # doesn't, clear the next rise time so that it is excluded from future
+    # calculations.
     if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_rise < body_set or \
        isinstance(body_rise, str) and isinstance(body_set, str):
 
@@ -56,26 +79,29 @@ def get_transit_times(body, date, lat, lon):
                 next_body_rise = None
 
 
-    # Populate the transit times dictionary.
-    if body_rise:
-        if helpers.is_date(body_rise):
-            body_rise = helpers.split_date(body_rise)
-        times['rise'] = body_rise
-
-    if body_set:
-        if helpers.is_date(body_set):
-            body_set = helpers.split_date(body_set)
-        times['set'] = body_set
-
+    # Populate the transit times list with rise and set times, appending them
+    # in the order that they occur.
     if prev_body_rise:
-        if helpers.is_date(prev_body_rise):
-            prev_body_rise = helpers.split_date(prev_body_rise)
-        times['prev_rise'] = prev_body_rise
+        times.append(format_transit_time('rise', prev_body_rise))
+
+    if helpers.is_date(body_rise) and helpers.is_date(body_set):
+
+        if body_rise < body_set:
+            times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', body_set))
+
+        else:
+            times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', body_rise))
+
+    else:
+
+        times.append(format_transit_time('rise', body_rise))
+        times.append(format_transit_time('set', body_set))
 
     if next_body_rise:
-        if helpers.is_date(next_body_rise):
-            next_body_rise = helpers.split_date(next_body_rise)
-        times['next_rise'] = next_body_rise
+
+        times.append(format_transit_time('rise', next_body_rise))
 
     return times
 
