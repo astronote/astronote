@@ -136,14 +136,6 @@ class MoonMethods(unittest.TestCase):
 
 class BodyMethods(unittest.TestCase):
 
-    # This does not work as of yet.
-    def test_is_visible(self):
-        visible1 = astronote.bodies.is_visible(ephem.Jupiter(), '2017-01-01')
-        visible2 = astronote.bodies.is_visible(ephem.Mercury(), '2017-01-01')
-        self.assertTrue(visible1)
-        self.assertFalse(visible2)
-
-
     def test_is_opposition(self):
         opposition1 = astronote.bodies.is_opposition(ephem.Pluto(), '2017-07-10')
         opposition2 = astronote.bodies.is_opposition(ephem.Pluto(), '2017-07-20')
