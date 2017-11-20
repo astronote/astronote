@@ -29,16 +29,17 @@ def get_transit_times(body, date, lat, lon):
     body_rise = get_transit(location.next_rising, body)
     body_set = get_transit(location.next_setting, body)
 
-    # Check to see if a previous rise is occurred. This is only necessary if
-    # the object sets before it rises.
+    # If the object sets before it rises, retrive the previous rise time as
+    # well to provide context to the set time.
     if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_set < body_rise or \
        isinstance(body_rise, str) and isinstance(body_set, str):
 
         prev_body_rise = get_transit(location.previous_rising, body)
 
 
-    # Get the next rise that occurs after the set, but only if it occurs on the
-    # same day.
+    # Check to see if the next rise occurs on the same day as the set. If it
+    # doesn't, clear the next rise time so that it is excluded from future
+    # calculations.
     if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_rise < body_set or \
        isinstance(body_rise, str) and isinstance(body_set, str):
 
