@@ -81,12 +81,12 @@ class TransitMethods(unittest.TestCase):
 
     def test_get_transit_times(self):
         sun_transit = astronote.transits.get_transit_times(ephem.Sun(), self.date, self.lat, self.lon)
-        self.assertIn('year', sun_transit['rise'])
-        self.assertIn('month', sun_transit['rise'])
-        self.assertIn('day', sun_transit['rise'])
-        self.assertIn('hour', sun_transit['rise'])
-        self.assertIn('minute', sun_transit['rise'])
-        self.assertIn('second', sun_transit['rise'])
+        self.assertIn('year', sun_transit[0]['time'])
+        self.assertIn('month', sun_transit[0]['time'])
+        self.assertIn('day', sun_transit[0]['time'])
+        self.assertIn('hour', sun_transit[0]['time'])
+        self.assertIn('minute', sun_transit[0]['time'])
+        self.assertIn('second', sun_transit[0]['time'])
 
 
     def test_get_transit(self):
