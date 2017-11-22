@@ -41,67 +41,90 @@ def get_transit_times(body, date, lat, lon):
     # Create a holder for all transit information.
     times = []
 
-    # Set up all rise and set variables.
+    # Set up all rise and set variables. The objective is to generate a set of
+    # four rise and set times in either a rise/set/rise/set or
+    # set/rise/set/rise pattern. Due to all dates and times being based on UTC,
+    # the extra information is useful for applications that will convert from
+    # UTC to a timezone/offset.
     prev_body_rise = None
+    prev_body_set = None
     body_rise = None
     body_set = None
     next_body_rise = None
+    next_body_set = None
 
-    # Check to see if the body is setting that day.
+    # Get the initial rise and set times for the body.
     body_rise = get_transit(location.next_rising, body)
     body_set = get_transit(location.next_setting, body)
 
-    # If the object sets before it rises, retrive the previous rise time as
-    # well to provide context to the set time.
-    if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_set < body_rise or \
-       isinstance(body_rise, str) and isinstance(body_set, str):
-
-        prev_body_rise = get_transit(location.previous_rising, body)
-
-
-    # Check to see if the next rise occurs on the same day as the set. If it
-    # doesn't, clear the next rise time so that it is excluded from future
-    # calculations.
-    if helpers.is_date(body_rise) and helpers.is_date(body_set) and body_rise < body_set or \
-       isinstance(body_rise, str) and isinstance(body_set, str):
-
-        if helpers.is_date(body_set):
-            next_body_rise = get_transit(location.next_rising, body, start=body_set)
-        else:
-            next_body_rise = get_transit(location.next_rising, body)
-
-        if helpers.is_date(next_body_rise):
-
-            next_body_rise_day = next_body_rise.datetime().day
-            current_day = datetime.strptime(date, '%Y-%m-%d').day
-
-            if next_body_rise_day != current_day:
-                next_body_rise = None
-
-
-    # Populate the transit times list with rise and set times, appending them
-    # in the order that they occur.
-    if prev_body_rise:
-        times.append(format_transit_time('rise', prev_body_rise))
-
+    # If the rise and set times are both valid, get additional information.
     if helpers.is_date(body_rise) and helpers.is_date(body_set):
 
+        # If the body sets after rising, get a previous set and future rise.
         if body_rise < body_set:
+            prev_body_set = get_transit(location.previous_setting, body, start=body_rise)
+            next_body_rise = get_transit(location.next_rising, body, start=body_set)
+
+            times.append(format_transit_time('set', prev_body_set))
             times.append(format_transit_time('rise', body_rise))
             times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', next_body_rise))
 
+        # If the body sets before rising, get a previous rise and future set.
         else:
+            prev_body_rise = get_transit(location.previous_rising, body, start=body_set)
+            next_body_set = get_transit(location.next_setting, body, start=body_rise)
+
+            times.append(format_transit_time('rise', prev_body_rise))
             times.append(format_transit_time('set', body_set))
             times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', next_body_set))
 
-    else:
+    # If the rise is undefined but the set is valid, get the previous and next
+    # rise times based from the set time.
+    elif not helpers.is_date(body_rise) and not helpers.is_date(body_set):
 
         times.append(format_transit_time('rise', body_rise))
         times.append(format_transit_time('set', body_set))
 
-    if next_body_rise:
+    else:
 
-        times.append(format_transit_time('rise', next_body_rise))
+        if body_rise == 'AlwaysUp':
+            prev_body_set = get_transit(location.previous_setting, body, start=body_set)
+            next_body_rise = get_transit(location.next_rising, body, start=body_set)
+
+            times.append(format_transit_time('set', prev_body_set))
+            times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', next_body_rise))
+
+        elif body_rise == 'NeverUp':
+            prev_body_rise = get_transit(location.previous_rising, body, start=body_set)
+            next_body_set = get_transit(location.next_setting, body, start=body_set)
+
+            times.append(format_transit_time('rise', prev_body_rise))
+            times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', next_body_set))
+
+        elif body_set == 'AlwaysUp':
+            prev_body_set = get_transit(location.previous_setting, body, start=body_rise)
+            next_body_rise = get_transit(location.next_rising, body, start=body_rise)
+
+            times.append(format_transit_time('set', prev_body_set))
+            times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', next_body_rise))
+
+        elif body_set == 'NeverUp':
+            prev_body_rise = get_transit(location.previous_rising, body, start=body_rise)
+            next_body_set = get_transit(location.next_setting, body, start=body_rise)
+
+            times.append(format_transit_time('rise', prev_body_rise))
+            times.append(format_transit_time('set', body_set))
+            times.append(format_transit_time('rise', body_rise))
+            times.append(format_transit_time('set', next_body_set))
+
 
     return times
 

@@ -7,6 +7,12 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.1]
+### Changed
+- The way transit times are collected and ordered in the JSON response, allowing
+  for a maximum of four transits to be returned for a given body.
+
+
 ## [0.5.0]
 ### Changed
 - The `event` key on events to `type`.
@@ -94,10 +100,11 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - The foundational functions of AstroNote as one initial commit.
 
 
-[Unreleased] https://github.com/dfranklinau/astronote/compare/v0.5.0...HEAD
-[0.5.0] https://github.com/dfranklinau/astronote/compare/v0.4.0...v0.5.0
-[0.4.0] https://github.com/dfranklinau/astronote/compare/v0.3.2...v0.4.0
-[0.3.2] https://github.com/dfranklinau/astronote/compare/v0.3.1...v0.3.2
-[0.3.1] https://github.com/dfranklinau/astronote/compare/v0.3.0...v0.3.1
-[0.3.0] https://github.com/dfranklinau/astronote/compare/v0.2.0...v0.3.0
-[0.2.0] https://github.com/dfranklinau/astronote/compare/v0.1.0...v0.2.0
+[Unreleased] https://github.com/astronote/astronote-api/compare/v0.5.1...HEAD
+[0.5.1] https://github.com/astronote/astronote-api/compare/v0.5.0...v0.5.1
+[0.5.0] https://github.com/astronote/astronote-api/compare/v0.4.0...v0.5.0
+[0.4.0] https://github.com/astronote/astronote-api/compare/v0.3.2...v0.4.0
+[0.3.2] https://github.com/astronote/astronote-api/compare/v0.3.1...v0.3.2
+[0.3.1] https://github.com/astronote/astronote-api/compare/v0.3.0...v0.3.1
+[0.3.0] https://github.com/astronote/astronote-api/compare/v0.2.0...v0.3.0
+[0.2.0] https://github.com/astronote/astronote-api/compare/v0.1.0...v0.2.0
