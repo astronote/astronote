@@ -7,6 +7,12 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.1]
+### Changed
+- The way transit times are collected and ordered in the JSON response, allowing
+  for a maximum of four transits to be returned for a given body.
+
+
 ## [0.5.0]
 ### Changed
 - The `event` key on events to `type`.
