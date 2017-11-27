@@ -194,11 +194,16 @@ def get_separation_events(bodies, date):
 
                     separation = separations.get_min_separation(body1, body2, date)
 
-                    events.append(helpers.create_event('separation', {
-                        'body1': body1.name.lower(),
-                        'body2': body2.name.lower(),
-                        'angle': separation
-                    }))
+                    # If the separation is small enough to be notable, the
+                    # separation will be a numerical value. If the separation
+                    # is too large, the value will be `None`.
+                    if separation:
+
+                        events.append(helpers.create_event('separation', {
+                            'body1': body1.name.lower(),
+                            'body2': body2.name.lower(),
+                            'angle': separation
+                        }))
 
         # Remove the first element from the list which is used for comparisons
         # only. This means that any duplicate checks are avoided because the
