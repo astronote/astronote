@@ -202,7 +202,7 @@ def get_separation_events(bodies, date):
                         events.append(helpers.create_event('separation', {
                             'body1': body1.name.lower(),
                             'body2': body2.name.lower(),
-                            'angle': separation
+                            'angle': round(separation, 2)
                         }))
 
         # Remove the first element from the list which is used for comparisons
