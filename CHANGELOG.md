@@ -7,6 +7,14 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.2]
+### Fixed
+- The way separation events are added by checking the separation value before
+  adding. In some instances, while a minimum separation may occur, the
+  separation value will be too large to be noteworthy and will return `None`.
+  These separation values of `None` are no longer added.
+
+
 ## [0.5.1]
 ### Changed
 - The way transit times are collected and ordered in the JSON response, allowing
@@ -100,7 +108,8 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - The foundational functions of AstroNote as one initial commit.
 
 
-[Unreleased] https://github.com/astronote/astronote-api/compare/v0.5.1...HEAD
+[Unreleased] https://github.com/astronote/astronote-api/compare/v0.5.2...HEAD
+[0.5.2] https://github.com/astronote/astronote-api/compare/v0.5.1...v0.5.2
 [0.5.1] https://github.com/astronote/astronote-api/compare/v0.5.0...v0.5.1
 [0.5.0] https://github.com/astronote/astronote-api/compare/v0.4.0...v0.5.0
 [0.4.0] https://github.com/astronote/astronote-api/compare/v0.3.2...v0.4.0
